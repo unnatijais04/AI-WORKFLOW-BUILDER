@@ -5,6 +5,20 @@ import { useDropzone } from 'react-dropzone';
 export default function ConfigurationPanel({ node, onClose }) {
   const [config, setConfig] = useState(node.data.config || {});
 
+  // Move useDropzone to component level to fix React Hooks rule
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'application/pdf': ['.pdf'],
+      'text/plain': ['.txt'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+    },
+    onDrop: (acceptedFiles) => {
+      const newConfig = { ...config, documents: [...(config.documents || []), ...acceptedFiles] };
+      setConfig(newConfig);
+      node.data.config = newConfig;
+    }
+  });
+
   const updateConfig = (key, value) => {
     const newConfig = { ...config, [key]: value };
     setConfig(newConfig);
@@ -42,17 +56,6 @@ export default function ConfigurationPanel({ node, onClose }) {
   );
 
   const renderKnowledgeBaseConfig = () => {
-    const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-      accept: {
-        'application/pdf': ['.pdf'],
-        'text/plain': ['.txt'],
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
-      },
-      onDrop: (acceptedFiles) => {
-        updateConfig('documents', [...(config.documents || []), ...acceptedFiles]);
-      }
-    });
-
     return (
       <div className="space-y-4">
         <div>
