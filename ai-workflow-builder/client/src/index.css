@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -9,6 +10,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
@@ -16,12 +18,15 @@ code {
     monospace;
 }
 
+/* React Flow customizations */
 .react-flow__node {
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .react-flow__node:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
 }
 
 .react-flow__handle {
@@ -29,20 +34,88 @@ code {
   height: 8px;
   background: #555;
   border: 2px solid #fff;
+  transition: all 0.2s ease;
 }
 
 .react-flow__handle:hover {
   background: #333;
+  transform: scale(1.2);
 }
 
+.react-flow__edge-path {
+  stroke: #555;
+  stroke-width: 2;
+}
+
+.react-flow__edge-path:hover {
+  stroke: #333;
+  stroke-width: 3;
+}
+
+/* Custom component styles */
 .node-config-panel {
   background: white;
   border-left: 1px solid #e5e7eb;
   box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .chat-interface {
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .node-config-panel {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50vh;
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .chat-interface {
+    width: 95%;
+    height: 90%;
+  }
 }

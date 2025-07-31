@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './index.css';
 import Sidebar from './component/Sidebar';
 import FlowCanvas from './component/FlowCanvas';
 import ConfigurationPanel from './component/ConfigurationPanel';

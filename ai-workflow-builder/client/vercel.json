@@ -1,4 +1,7 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "framework": "create-react-app",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://your-backend.onrender.com/api/$1" }
   ]
