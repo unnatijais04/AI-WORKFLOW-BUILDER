@@ -364,7 +364,7 @@ async def execute_workflow_graph(graph: Dict, nodes: Dict, query: str) -> str:
             await execute_node(dep)
         
         # Execute current node
-        result = await execute_single_node(node, query, results)
+        result = await execute_single_node(node, query, results, nodes)
         results[node_id] = result
         executed.add(node_id)
         
@@ -383,7 +383,7 @@ async def execute_workflow_graph(graph: Dict, nodes: Dict, query: str) -> str:
     else:
         return "Workflow completed but no output node found"
 
-async def execute_single_node(node: Dict, query: str, previous_results: Dict) -> str:
+async def execute_single_node(node: Dict, query: str, previous_results: Dict, nodes: Dict = None) -> str:
     """Execute a single node"""
     node_type = node["type"]
     config = node.get("data", {}).get("config", {})
@@ -417,11 +417,12 @@ async def execute_single_node(node: Dict, query: str, previous_results: Dict) ->
         input_context = ""
         
         # Find connected nodes
-        for node_id, result in previous_results.items():
-            if nodes[node_id]["type"] == "userQuery":
-                input_query = result
-            elif nodes[node_id]["type"] == "knowledgeBase":
-                input_context = result
+        if nodes:
+            for node_id, result in previous_results.items():
+                if nodes[node_id]["type"] == "userQuery":
+                    input_query = result
+                elif nodes[node_id]["type"] == "knowledgeBase":
+                    input_context = result
         
         # Call LLM
         try:
