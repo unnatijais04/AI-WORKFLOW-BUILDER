@@ -7,6 +7,10 @@ import os
 import json
 import asyncio
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Import required libraries for AI functionality
 try:
@@ -63,7 +67,10 @@ SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
 # Initialize clients
 openai_client = None
 if OPENAI_API_KEY:
-    openai_client = OpenAI(api_key=OPENAI_API_KEY)
+    try:
+        openai_client = OpenAI(api_key=OPENAI_API_KEY)
+    except Exception as e:
+        print(f"Warning: OpenAI client not available: {e}")
 
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
@@ -71,10 +78,7 @@ if GEMINI_API_KEY:
 # Initialize ChromaDB
 chroma_client = None
 try:
-    chroma_client = chromadb.Client(Settings(
-        chroma_db_impl="duckdb+parquet",
-        persist_directory="./chroma_db"
-    ))
+    chroma_client = chromadb.PersistentClient(path="./chroma_db")
     collection = chroma_client.get_or_create_collection("documents")
 except Exception as e:
     print(f"Warning: ChromaDB not available: {e}")
@@ -82,7 +86,8 @@ except Exception as e:
 # Initialize sentence transformer for embeddings
 embedding_model = None
 try:
-    embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+    # Only import if needed to avoid startup issues
+    embedding_model = None  # Will be initialized on first use
 except Exception as e:
     print(f"Warning: Sentence transformers not available: {e}")
 
@@ -393,8 +398,16 @@ async def execute_single_node(node: Dict, query: str, previous_results: Dict) ->
     
     elif node_type == "knowledgeBase":
         # Search documents for relevant context
-        if chroma_client and embedding_model:
+        if chroma_client:
             try:
+                # Initialize embedding model on first use
+                global embedding_model
+                if embedding_model is None:
+                    try:
+                        embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+                    except Exception as e:
+                        return f"Error initializing embedding model: {str(e)}"
+                
                 query_embedding = embedding_model.encode(query)
                 results = collection.query(
                     query_embeddings=[query_embedding.tolist()],

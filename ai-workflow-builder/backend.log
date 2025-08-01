@@ -1,0 +1,11 @@
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:     Started server process [10899]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+Warning: OpenAI client not available: Client.__init__() got an unexpected keyword argument 'proxies'
+INFO:     127.0.0.1:55156 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36750 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36758 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36768 - "GET /health HTTP/1.1" 200 OK
